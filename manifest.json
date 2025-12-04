@@ -12,7 +12,7 @@
   "theme_color": "#004085",
   "icons": [
     {
-      "src": "/",
+      "src": "/igboline.png",
       "sizes": "960x960",
       "type": "image/png"
     },
