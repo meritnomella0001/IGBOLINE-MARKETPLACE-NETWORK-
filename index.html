@@ -197,16 +197,17 @@
   <div class="brand">
     <div class="logo"><i class="bi bi-shop" style="color:var(--gold); font-size:18px"></i></div>
     <div>
-      <div class="title">IGBOLINE MARKET NETWORKS</div>
-      <div style="font-size:.78rem; color:var(--muted)">Elegant  Marketplace For Everything You Need</div>
+      <div class="title">IGBOLINE ELECTRICS NETWORKS</div>
+      <div style="font-size:.78rem; color:var(--muted)">Elegant  Marketplace For Every Eectricals You Need</div>
     </div>
   </div>
-  <div class="top-controls">
-    <select id="stateSelect" class="form-select form-select-sm" style="min-width:120px">
-      <option value="">All states</option>
-    </select>
-    <button id="menuBtn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-list"></i></button>
-  </div>
+<div class="top-controls">
+  <select id="stateSelect" class="form-select form-select-sm" style="min-width:120px">
+    <option value="" selected>More Info ▼</option>
+    <option value="about">Know More (About Us)</option>
+    <option value="howto">How to Order</option>
+  </select>
+  <button id="menuBtn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-list"></i></button>
 </div>
 
 <!-- SEARCH -->
@@ -544,8 +545,8 @@ if ('serviceWorker' in navigator) {
     <button class="close-btn" aria-label="Close">&times;</button>
     
     <div class="modal-header">
-      <img src="/bdi.png" alt=" chimas Interiors furnitures" class="modal-logo">
-      <h3>Install ezekings solar products app</h3>
+      <img src="/.png" alt="igboline electricals" class="modal-logo">
+      <h3>Install igboline electricals app</h3>
     </div>
 
     <div class="modal-body">
@@ -886,14 +887,58 @@ window.addEventListener('appinstalled', () => {
         </button>
     </div>
 </div>
-  <div class="top-controls">
-  <select id="stateSelect" class="form-select form-select-sm" style="min-width:120px">
-    <option value="" selected>More Info ▼</option>
-    <option value="about">Know More (About Us)</option>
-    <option value="howto">How to Order</option>
-  </select>
-  <button id="menuBtn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-list"></i></button>
+Mp9 I love jesus plaza 
+
+<!-- About Panel -->
+<div id="aboutPanel" class="side-panel">
+  <div class="panel-header">
+    <h2>About Blessed Delight Interiors</h2>
+    <button class="close-btn">×</button>
   </div>
+  <div class="panel-content">
+    <p class="elegant-text">
+      <strong>IGBOLINE ELECTRICALS </strong> is a reputable and long-established electricals dealership located at the heart of <strong>Alaba International Market, Lagos</strong>.
+    </p>
+    <p class="elegant-text">
+      We specialize in supplys of premium home, industrial and office electrical appliances, offering timeless designs that combine comfort, craftsmanship, and contemporary style at wholesale prices.
+    </p>
+    <p class="elegant-text">
+      Through trusted logistics partners (Innoson Logistics, Okeyson Transport, Edison Logistics, etc.), we deliver to <strong>all 36 states + FCT</strong>.
+    </p>
+    <div class="contact-card">
+      <h3>Contact Information</h3>
+      <p><span class="material-icons">phone</span> 0701 355 0569 (Call/WhatsApp)</p>
+      <p><span class="material-icons">location_on</span> Shop F1645A, Alaba International Market, Ojo, Lagos</p>
+      <p><span class="material-icons">domain_verification</span> Fully CAC-Registered Business</p>
+    </div>
+    <div class="thank-you" style="text-align:center; font-style:italic; color:#8B4513; margin-top:25px;">
+      Thank you for choosing Igboline electricals — Your trusted electrical partner.
+    </div>
+  </div>
+</div>
+
+<!-- How to Order Panel -->
+<div id="howToPanel" class="side-panel">
+  <div class="panel-header">
+    <h2>How to Place Your Order</h2>
+    <button class="close-btn">×</button>
+  </div>
+  <div class="panel-content">
+    <div class="steps">
+      <h3 class="text-center mb-4">Simple 4-Step Ordering Process</h3>
+      <div class="step"><div class="step-icon">1</div><div class="step-text"><strong>Select your item</strong><br>Tap the ❤️ icon on any product</div></div>
+      <div class="step"><div class="step-icon">2</div><div class="step-text"><strong>Make an offer</strong><br>Click “Make an Offer” button</div></div>
+      <div class="step"><div class="step-icon">3</div><div class="step-text"><strong>Contact us</strong><br>Use WhatsApp or Call button</div></div>
+      <div class="step"><div class="step-icon">4</div><div class="step-text"><strong>Send details</strong><br>Forward product link + your price</div></div>
+      <div class="final-note">
+        We will confirm availability, finalize pricing, and arrange delivery anywhere in Nigeria.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div id="overlay" class="overlay"></div>
   <script>
 // Share Data
 const shareMessage = `Welcome to IGBOLINE ELECTRICALS marketplace 👨‍🔧👩‍🔧🧑‍🔧🔌⚡🛋️✨\nYou can order any electrical /electronics appliances from the link below 👇\nhttps://paschal-interior-furnitures.onrender.com\nStart shopping now!`;
@@ -971,6 +1016,7 @@ document.getElementById("shareInstagram").onclick = async () => {
 </body>
 
 </html>
+
 
 
 
