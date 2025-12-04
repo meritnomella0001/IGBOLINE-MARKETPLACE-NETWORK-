@@ -565,5 +565,614 @@ async function performSearch(query){
   const allResultsMap = new Map();
   frontendResults.concat(backendResults).forEach(p => allResultsMap.set(p.id, p));
   
+  const allResults = Array.from(allResultsMap.values());
   
+  // render filtered products
+  renderSections(allResults);
+}
+
+// ------------------- HOOK SEARCH INPUT -------------------
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+
+searchBtn.addEventListener('click', ()=>{
+  const query = searchInput.value;
+  performSearch(query);
+});
+
+searchInput.addEventListener('keypress', e => {
+  if(e.key === 'Enter'){
+    const query = e.target.value;
+    performSearch(query);
+  }
+});
+
+
+function openPreviewModal(p){
+  document.getElementById('sheetName').textContent = p.name;
+  document.getElementById('sheetCat').textContent = p.category;
+  document.getElementById('sheetPrice').textContent = formatPrice(p.price);
+  document.getElementById('sheetState').textContent = p.state||'';
+  document.getElementById('sheetDesc').textContent = p.description||'';
+  document.getElementById('sheetImg').src = getPublicUrl(p.images && p.images[0]) || 'https://via.placeholder.com/300';
+  const thumbs = ['thumbA','thumbB','thumbC'];
+thumbs.forEach((id,i)=>{
+  const el = document.getElementById(id);         // get the thumbnail element
+  if(p.images && p.images[i+1]){                  // check if there’s an image for this thumb
+    el.style.display='block';                     // show the thumbnail
+    el.src = getPublicUrl(p.images[i+1]);         // set the image URL
+  } else el.style.display='none';                // hide it if no image
+});
+  
+  const defaultPhone = '07013550569'; // fallback number
+const phone = p.phone || defaultPhone;
+const number = phone && phone.startsWith('0') ? '234' + phone.slice(1) : phone;
+
+// main image public URL
+const imgUrl = p.images && p.images[0] ? getPublicUrl(p.images[0]) : 'https://via.placeholder.com/300';
+
+document.getElementById('callBtn').href = number ? 'tel:' + number : '#';
+
+// WhatsApp message including image link
+const waMsg = `Hello, I'm enquiring about ${p.name} priced ${formatPrice(p.price)}. Is it still available? See image: ${imgUrl}`;
+
+document.getElementById('waBtn').href = number 
+  ? `https://wa.me/${number}?text=${encodeURIComponent(waMsg)}`
+  : `https://wa.me/?text=${encodeURIComponent(waMsg)}`;
+
+document.getElementById('sheetBackdrop').classList.add('show');
+document.getElementById('bottomSheet').classList.add('show');
+}
+
+document.getElementById('sheetClose').addEventListener('click', ()=>{
+  document.getElementById('sheetBackdrop').classList.remove('show');
+  document.getElementById('bottomSheet').classList.remove('show');
+});
+document.getElementById('sheetBackdrop').addEventListener('click', ()=>{
+  document.getElementById('sheetBackdrop').classList.remove('show');
+  document.getElementById('bottomSheet').classList.remove('show');
+});
+
+document.getElementById('sendMsg').addEventListener('click', ()=>{
+  const msg = document.getElementById('sheetMessage').value.trim();
+  if(!msg) return alert('Type a message first');
+  alert('Message sent: '+msg);
+  document.getElementById('sheetMessage').value='';
+});
+
+document.getElementById('cancelMsg').addEventListener('click', ()=>{
+  document.getElementById('sheetMessage').value='';
+});
+
+document.addEventListener('DOMContentLoaded', async ()=>{
+  await loadCategories();
+  await loadProducts();
+});
+</script>
+  <script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch(err => console.log('Service Worker registration failed:', err));
+  });
+}
+  </script>
+  <!-- PWA Install Prompt Modal (Furniture Theme) -->
+<div id="installModal" class="install-modal">
+  <div class="modal-content">
+    <button class="close-btn" aria-label="Close">&times;</button>
+    
+    <div class="modal-header">
+      <img src="/bdi.png" alt="Blessed Delight Interiors" class="modal-logo">
+      <h3>Install Blessed Delight Interiors</h3>
+    </div>
+
+    <div class="modal-body">
+      <p><strong>Get the full electrical/electronics shopping experience!</strong></p>
+      <p>Install our app for faster access, offline browsing, and exclusive interior design inspiration — right from your home screen.</p>
+      
+      <div class="feature-grid">
+        <div class="feature">
+          <span role="img" aria-label="sofa">Sofa</span> Browse electrical/electronics offline
+        </div>
+        <div class="feature">
+          <span role="img" aria-label="speed">Speed</span> Instant loading
+        </div>
+        <div class="feature">
+          <span role="img" aria-label="home">Home</span> Home screen shortcut
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button id="installBtn" class="install-button">Install App</button>
+      <button class="later-btn">Maybe Later</button>
+    </div>
+  </div>
+</div>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- Floating Gold Button -->
+<button id="shareBtn" class="floating-share-btn">
+    <span class="material-icons">share</span>
+</button>
+
+<!-- Overlay -->
+<div class="overlay-bg" id="overlay"></div>
+
+<!-- Slide-out Share Panel -->
+<div class="share-slide-panel" id="sharePanel">
+    <button class="close-panel-btn" id="closePanelBtn">&times;</button>
+    <h3 class="panel-title">Share With Friends</h3>
+    
+    <div class="share-options-grid">
+        <button class="share-option" id="shareFacebook">
+            <span class="material-icons">facebook</span>
+            <p>Facebook</p>
+        </button>
+        
+        <button class="share-option" id="shareWhatsApp">
+            <span class="material-icons">chat</span>
+            <p>WhatsApp</p>
+        </button>
+        
+        <button class="share-option" id="shareTikTok">
+            <span class="material-icons">music_note</span>
+            <p>TikTok</p>
+        </button>
+        
+        <button class="share-option" id="shareTwitter">
+            <span class="material-icons">public</span>
+            <p>X</p>
+        </button>
+        
+        <button class="share-option" id="shareLinkedIn">
+            <span class="material-icons">work</span>
+            <p>LinkedIn</p>
+        </button>
+        
+        <button class="share-option" id="shareEmail">
+            <span class="material-icons">mail</span>
+            <p>Email</p>
+        </button>
+    </div>
+</div>
+<style>
+/* Furniture-Themed Install Modal */
+.install-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(74, 54, 38, 0.85);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  font-family: 'Georgia', serif;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.install-modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: #fdf6e3;
+  border-radius: 16px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  overflow: hidden;
+  margin-top: 80px;
+  border: 3px solid #8B6F47;
+  position: relative;
+  animation: slideDown 0.5s ease-out;
+}
+
+.modal-header {
+  text-align: center;
+  padding: 1.5rem 1rem 0.5rem;
+  background: linear-gradient(to bottom, #f4e8d1, #fdf6e3);
+}
+
+.modal-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  border: 2px solid #8B6F47;
+  margin-bottom: 0.5rem;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #5D4037;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 1rem 1.5rem;
+  color: #5D4037;
+  line-height: 1.6;
+}
+
+.modal-body p {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #6D4C41;
+  background: #faecd3;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border-left: 4px solid #D4A017;
+}
+
+.feature span[role="img"] {
+  font-size: 1.3rem;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-direction: column;
+}
+
+.install-button {
+  background: #8B6F47;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
+}
+
+.install-button:hover {
+  background: #6d5638;
+  transform: translateY(-2px);
+}
+
+.later-btn {
+  background: transparent;
+  color: #8D6E63;
+  border: 2px solid #D7CCC8;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.later-btn:hover {
+  background: #efebe9;
+  border-color: #8D6E63;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #8B6F47;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: 0.2s;
+}
+
+.close-btn:hover {
+  background: #6d5638;
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modal-content {
+    margin-top: 60px;
+    border-radius: 12px;
+  }
+  .modal-header h3 {
+    font-size: 1.2rem;
+  }
+}
+</style>
+
+<script>
+// PWA Install Prompt Logic
+let deferredPrompt;
+const installModal = document.getElementById('installModal');
+const installBtn = document.getElementById('installBtn');
+const closeBtn = document.querySelector('.close-btn');
+const laterBtn = document.querySelector('.later-btn');
+
+// Check if already installed or dismissed
+if (!localStorage.getItem('pwa_install_dismissed') && !window.matchMedia('(display-mode: standalone)').matches) {
+  // Listen for the install prompt
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    setTimeout(() => installModal.classList.add('show'), 3000); // Show after 3s
+  });
+}
+
+// Install button
+installBtn?.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  installModal.classList.remove('show');
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    localStorage.setItem('pwa_installed', 'true');
+  }
+  deferredPrompt = null;
+});
+
+// Close or Later
+[closeBtn, laterBtn].forEach(btn => {
+  btn?.addEventListener('click', () => {
+    installModal.classList.remove('show');
+    localStorage.setItem('pwa_install_dismissed', 'true');
+  });
+});
+
+// Hide if already installed
+window.addEventListener('appinstalled', () => {
+  installModal.classList.remove('show');
+  localStorage.setItem('pwa_installed', 'true');
+});
+        </script>
+  <!-- Opera Mini Warning + Chrome Link -->
+<div id="browser-warning" style="
+  display:none;
+  background:#004085;
+  color:#fff;
+  padding:12px;
+  text-align:center;
+  font-size:15px;
+  font-family:sans-serif;
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  z-index:1000;
+">
+  ⚠️ Opera Mini detected. For the best experience, 
+  <a id="chrome-link" 
+     href="googlechrome://navigate?url=https://blesseddelightinteriors.onrender.com"
+     style="color:#ffeb3b; text-decoration:underline;">
+     open this app in Chrome
+  </a>
+  to install it.
+</div>
+  
+
+<script>
+  // Detect Opera Mini or old browsers
+  if (navigator.userAgent.includes('Opera Mini')) {
+    document.getElementById('browser-warning').style.display = 'block';
+  }
+</script>
+  <script>
+// Share Data
+const shareMessage = `Welcome to igboline electricals🧑‍🔧👩‍🔧👨‍🔧🔌⚡ 🛋️✨\nYou can order any electrical/electronic from the link below 👇\https://igbolineelectricals.onrender.com\nStart shopping now!`;
+const url = "https://igbolineelectricals.onrender.com";
+
+// Elements
+const shareBtn = document.getElementById("shareBtn");
+const panel    = document.getElementById("sharePanel");
+const overlay  = document.getElementById("overlay");
+
+// Open Panel
+shareBtn.addEventListener("click", () => {
+    panel.classList.add("open");
+    overlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+});
+
+// Close Panel
+overlay.addEventListener("click", () => {
+    panel.classList.remove("open");
+    overlay.classList.remove("active");
+    document.body.style.overflow = "auto";
+});
+
+// Sharing Functions
+document.getElementById("shareFacebook").onclick = () => {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+};
+
+document.getElementById("shareWhatsApp").onclick = () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`, "_blank");
+};
+
+document.getElementById("shareTwitter").onclick = () => {
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`, "_blank");
+};
+
+document.getElementById("shareTikTok").onclick = async () => {
+    await navigator.clipboard.writeText(shareMessage);
+    alert("Message copied! Paste it in TikTok.");
+};
+
+document.getElementById("shareLinkedIn").onclick = () => {
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, "_blank");
+};
+
+document.getElementById("shareEmail").onclick = () => {
+    const subject = "Check out igboline electrical appliances !";
+    const body = `${shareMessage.replace(/\n/g, "%0A")}`;
+    window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${body}`);
+};
+    // Close panel when X is clicked
+document.getElementById("closePanelBtn").addEventListener("click", () => {
+    panel.classList.remove("open");
+    overlay.classList.remove("active");
+    document.body.style.overflow = "auto";
+});
+  </script>
+  <!-- About Panel -->
+<div id="aboutPanel" class="side-panel">
+  <div class="panel-header">
+    <h2>About igboline electricals</h2>
+    <button class="close-btn">×</button>
+  </div>
+  <div class="panel-content">
+    <p class="elegant-text">
+      <strong>Igboline electricals/electronics</strong> is a reputable and long-established electricals/electronic dealership located at the heart of <strong>Alaba International Market, Lagos</strong>.
+    </p>
+    <p class="elegant-text">
+      We specialize supply of premium home, industrial and office electrical/electronics, offering timeless designs that combine comfort, craftsmanship, and contemporary style.
+    </p>
+    <p class="elegant-text">
+      Through trusted logistics partners (Innocent Logistics, Okeyson Transport, Edison Logistics, etc.), we deliver to <strong>all 36 states + FCT</strong>.
+    </p>
+    <div class="contact-card">
+      <h3>Contact Information</h3>
+      <p><span class="material-icons">phone</span> 0701 355 0569 (Call/WhatsApp)</p>
+      <p><span class="material-icons">location_on</span> Shop F1645A, Alaba International Market, Ojo, Lagos</p>
+      <p><span class="material-icons">domain_verification</span> Fully CAC-Registered Business</p>
+    </div>
+    <!-- Add this line exactly after the CAC <p> line -->
+<div class="cac-image-wrapper">
+  <img src="https://blesseddelightinteriors.onrender.com/1764774156502-.jpg" 
+       alt="Blessed Delight Interiors - CAC Registration Certificate & Premium Furniture Showcase" 
+       class="cac-image">
+  <div class="image-caption">
+    Officially Registered • Trusted Nationwide • Premium Quality Guaranteed
+  </div>
+</div>
+    <div class="thank-you" style="text-align:center; font-style:italic; color:#8B4513; margin-top:25px;">
+      Thank you for choosing igboline electricals— Your trusted electrical/electrical partner.
+    </div>
+  </div>
+</div>
+
+<!-- How to Order Panel -->
+<div id="howToPanel" class="side-panel">
+  <div class="panel-header">
+    <h2>How to Place Your Order</h2>
+    <button class="close-btn">×</button>
+  </div>
+  <div class="panel-content">
+    <div class="steps">
+      <h3 class="text-center mb-4">Simple 4-Step Ordering Process</h3>
+      <div class="step"><div class="step-icon">1</div><div class="step-text"><strong>Select your item</strong><br>Tap the ❤️ icon on any product</div></div>
+      <div class="step"><div class="step-icon">2</div><div class="step-text"><strong>Make an offer</strong><br>Click “Make an Offer” button</div></div>
+      <div class="step"><div class="step-icon">3</div><div class="step-text"><strong>Contact us</strong><br>Use WhatsApp or Call button</div></div>
+      <div class="step"><div class="step-icon">4</div><div class="step-text"><strong>Send details</strong><br>Forward product link + your price</div></div>
+      <div class="final-note">
+        We will confirm availability, finalize pricing, and arrange delivery anywhere in Nigeria.
+      </div>
+      <div class="cac-image-wrapper">
+  <img src="https://blesseddelightinteriors.onrender.com/1764774156502.jpg" 
+       alt="Blessed Delight Interiors - CAC Registration Certificate & Premium Furniture Showcase" 
+       class="cac-image">
+  <div class="image-caption">
+    Officially Registered • Trusted Nationwide • Premium Quality Guaranteed
+  </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div id="overlay" class="overlay"></div>
+  <script>
+document.getElementById('stateSelect').addEventListener('change', function() {
+  const val = this.value;
+  this.value = ""; // reset dropdown
+
+  if (val === 'about') {
+    document.getElementById('aboutPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+  }
+  if (val === 'howto') {
+    document.getElementById('howToPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+  }
+});
+
+// Close everything when clicking X or overlay
+document.querySelectorAll('.close-btn, #overlay').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('open'));
+    document.getElementById('overlay').classList.remove('active');
+  });
+});
+  </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
 
