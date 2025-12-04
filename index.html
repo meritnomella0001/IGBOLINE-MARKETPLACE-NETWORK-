@@ -944,7 +944,7 @@ window.addEventListener('appinstalled', () => {
         </button>
     </div>
 </div>
-Mp9 I love jesus plaza 
+
 
 <!-- About Panel -->
 <div id="aboutPanel" class="side-panel">
@@ -1069,10 +1069,34 @@ document.getElementById("shareInstagram").onclick = async () => {
     }
 };
   </script>
+  <script>
+document.getElementById('stateSelect').addEventListener('change', function() {
+  const val = this.value;
+  this.value = ""; // reset dropdown
+
+  if (val === 'about') {
+    document.getElementById('aboutPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+  }
+  if (val === 'howto') {
+    document.getElementById('howToPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+  }
+});
+
+// Close everything when clicking X or overlay
+document.querySelectorAll('.close-btn, #overlay').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('open'));
+    document.getElementById('overlay').classList.remove('active');
+  });
+});
+  </script>
   
 </body>
 
 </html>
+
 
 
 
