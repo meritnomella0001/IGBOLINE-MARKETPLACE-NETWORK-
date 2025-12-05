@@ -1151,6 +1151,21 @@ document.querySelectorAll('.close-btn, #overlay').forEach(el => {
     document.getElementById('overlay').classList.remove('active');
   });
 });
+    // Instagram Share (opens app or web + copies message)
+document.getElementById("shareInstagram").onclick = async () => {
+    await navigator.clipboard.writeText(shareMessage);
+    alert("Message copied! 📸 Now paste it in Instagram Stories or DM.");
+    
+    // Optional: Try to open Instagram app (mobile only)
+    if (navigator.userAgent.match(/iPhone|iPad|iPod|Android/i)) {
+        window.location.href = "instagram://library";
+        setTimeout(() => {
+            window.open("https://www.instagram.com", "_blank");
+        }, 1000);
+    } else {
+        window.open("https://www.instagram.com", "_blank");
+    }
+};
   </script>
 </body>
 
@@ -1180,6 +1195,7 @@ document.querySelectorAll('.close-btn, #overlay').forEach(el => {
 
 
   
+
 
 
 
