@@ -1,6 +1,6 @@
 const CACHE_NAME = 'igbolineelecticals-cache-v1';
 const urlsToCache = [
-  '/',                  // Main page
+  '/https://igbolineelectricals.onrender.com',                  // Main page
   '/igboline.png',
   '/igboline.png'
 ];
